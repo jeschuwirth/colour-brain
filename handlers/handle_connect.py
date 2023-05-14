@@ -16,9 +16,9 @@ def handle_connect(table, event, connection_id, apig_management_client):
             'room_id': room_id,
             'user_name': user_name,
         })
-        message = json.dumps({"new_connection":{"id": connection_id, "user_name": user_name}})
+        message = json.dumps({"new_connection":{"user_name": user_name}})
         recipients = get_all_recipients(table, room_id)
-        handle_ws_message(table, recipients, message, apig_management_client)
+        status_code = handle_ws_message(table, recipients, message, apig_management_client)
     except ClientError:
-        status_code = 503
+        status_code = 506
     return status_code

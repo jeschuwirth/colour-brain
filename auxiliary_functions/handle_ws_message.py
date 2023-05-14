@@ -15,6 +15,4 @@ def handle_ws_message(table, recipients, message, apig_management_client):
                 apig_management_client.post_to_connection(Data=message, ConnectionId=connection)
             except ClientError:
                 print("Failed to disconnect connection")
-
-
     return status_code
