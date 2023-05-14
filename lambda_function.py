@@ -3,6 +3,7 @@ import os, boto3
 from handlers.routes import routes
 from handlers.handle_connect import handle_connect
 from handlers.handle_disconnect import handle_disconnect
+from auxiliary_functions.update_connected_users import update_connected_users
 
 
 dynamodb = boto3.resource('dynamodb')
@@ -30,10 +31,12 @@ def lambda_handler(event, context):
     )
 
     if route_key == '$connect':
-        response['statusCode'] = handle_connect(table, event, connection_id, apig_management_client)
+        response['statusCode'], room_id = handle_connect(table, event, connection_id, apig_management_client)
+        update_connected_users(table, room_id, apig_management_client)
     
     elif route_key == '$disconnect':
-        response['statusCode'] = handle_disconnect(table, event, connection_id, apig_management_client)
+        response['statusCode'], room_id = handle_disconnect(table, event, connection_id, apig_management_client)
+        update_connected_users(table, room_id, apig_management_client)
 
     else:
         response['statusCode'] = routes(route_key, table, event, connection_id, apig_management_client)

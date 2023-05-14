@@ -1,8 +1,4 @@
-import json
-
 from botocore.exceptions import ClientError
-from auxiliary_functions.handle_ws_message import handle_ws_message
-from auxiliary_functions.get_all_recipients import get_all_recipients
 
 def handle_connect(table, event, connection_id, apig_management_client):
     status_code = 200
@@ -16,9 +12,6 @@ def handle_connect(table, event, connection_id, apig_management_client):
             'room_id': room_id,
             'user_name': user_name,
         })
-        message = json.dumps({"new_connection":{"user_name": user_name}})
-        recipients = get_all_recipients(table, room_id)
-        status_code = handle_ws_message(table, recipients, message, apig_management_client)
     except ClientError:
-        status_code = 506
-    return status_code
+        status_code = 505
+    return status_code, room_id
